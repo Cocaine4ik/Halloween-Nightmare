@@ -12,6 +12,6 @@
 UCLASS()
 class HALLOWEENNIGHTMARE_API AHNPlayerController : public APlayerController
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
 };

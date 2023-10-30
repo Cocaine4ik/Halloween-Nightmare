@@ -10,13 +10,13 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "HNGameMode.h"
 
 // Sets default values
 AHNPlayer::AHNPlayer()
 {
     // Set size for collision capsule
     GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-
     // Don't rotate when the controller rotates. Let that just affect the camera.
     bUseControllerRotationPitch = false;
     bUseControllerRotationYaw = false;
@@ -64,6 +64,8 @@ void AHNPlayer::BeginPlay()
             Subsystem->AddMappingContext(DefaultMappingContext, 0);
         }
     }
+
+    GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AHNPlayer::OnCollision);
 }
 
 AHNPlayerController* AHNPlayer::GetPlayerController() const
@@ -72,6 +74,17 @@ AHNPlayerController* AHNPlayer::GetPlayerController() const
 
     return Cast<AHNPlayerController>(Controller);
     
+}
+
+void AHNPlayer::OnCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent,
+    int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
+{
+    // if (OverlappedComponent->GetName() != "Cave Trigger Box") return;
+    
+    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("Collision"));
+
+    const auto GameMod = Cast<AHNGameMode>(GetWorld()->GetAuthGameMode());
+    GameMod->RandomSpawnCaveTile();
 }
 
 void AHNPlayer::Move(const FInputActionValue& Value)

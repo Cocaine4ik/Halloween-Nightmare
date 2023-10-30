@@ -28,7 +28,7 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UCameraComponent* FollowCamera;
-
+    
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
     UInputMappingContext* DefaultMappingContext;
 
@@ -41,6 +41,10 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
     UInputAction* JumpAction;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player")
+    int32 LifeCount = 3;
+
+    
     void Move(const FInputActionValue& Value);
     void Look(const FInputActionValue& Value);
 
@@ -50,7 +54,14 @@ protected:
     virtual void BeginPlay() override;
 
 public:
+
+    int32 GetLifeCount() const { return LifeCount; }
+    void AddLife(int32 Value) { LifeCount += Value; }
+    
     FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
     FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
     AHNPlayerController* GetPlayerController() const;
+
+    UFUNCTION()
+    void OnCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit);
 };
