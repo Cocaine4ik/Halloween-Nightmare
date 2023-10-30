@@ -12,7 +12,9 @@ public class HalloweenNightmare : ModuleRules
 			{ "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "EnhancedInput" });
 		PublicIncludePaths.AddRange(new[]
 		{
-		"HalloweenNightmare/Public/Player"
+		"HalloweenNightmare/Public/Player",
+		"HalloweenNightmare/Public/UI",
+		"HalloweenNightmare/Public/Environment"
 		});
 	}
 }
