@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "HNPlayer.generated.h"
 
 class USpringArmComponent;
@@ -33,30 +34,33 @@ protected:
     UInputMappingContext* DefaultMappingContext;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    UInputAction* MoveAction;
+    UInputAction* MoveRightAction;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+    UInputAction* MoveUpAction;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
     UInputAction* LookAction;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-    UInputAction* JumpAction;
-
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player")
     int32 LifeCount = 3;
-
     
-    void Move(const FInputActionValue& Value);
+private:
+    void MoveRight(const FInputActionValue& Value);
+    void MoveUp(const FInputActionValue& Value);
+    void MoveForward();
     void Look(const FInputActionValue& Value);
-
     // Called to bind functionality to input
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
     // To add mapping context
     virtual void BeginPlay() override;
 
+    virtual void Tick(float DeltaSeconds) override;
 public:
 
     int32 GetLifeCount() const { return LifeCount; }
     void AddLife(int32 Value) { LifeCount += Value; }
+    void SetMaxFlySpeed(int32 Value) { GetCharacterMovement()->MaxFlySpeed = Value; }
     
     FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
     FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
