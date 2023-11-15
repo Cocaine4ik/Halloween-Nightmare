@@ -36,20 +36,30 @@ AHNCaveTile* AHNGameMode::SpawnCaveTile(TSubclassOf<AHNCaveTile> CaveTileClass, 
     return CaveTile;
 }
 
-AHNCaveTile* AHNGameMode::RandomSpawnCaveTile()
+AHNCaveTile* AHNGameMode::SpawnStartCaveTile()
 {
-    const auto RandomTileClassNum = FMath::RandRange(0, CaveTileClasses.Num() - 1);
-    
-    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red,
-        FString::Printf(TEXT("PreviousCaveTile name: %s"), *PreviousCaveTile->GetName()));
-    
-    
-    return SpawnCaveTile(CaveTileClasses[RandomTileClassNum], PreviousCaveTile->GetAttachTransform());
+    const auto SpawnedTile = SpawnCaveTile(DefaultCaveTileClass, FTransform::Identity);
+    SpawnedTile->DestroyAllObstacles();
+
+    return SpawnedTile;
 }
+
+AHNCaveTile* AHNGameMode::SpawnCaveTileWithRandomAngle()
+{
+    const auto SpawnedTile = SpawnCaveTile(DefaultCaveTileClass, PreviousCaveTile->GetAttachTransform());
+
+    SpawnedTile->RandomDestroyAllObstacles();
+    SpawnedTile->SetRandomCaveTileAngle();
+    
+    return SpawnedTile;
+}
+
 
 void AHNGameMode::BeginPlay()
 {
     Super::BeginPlay();
 
-    SpawnCaveTile(StraightCaveTileClass, FTransform::Identity);
+    SpawnStartCaveTile();
+    SpawnCaveTileWithRandomAngle();
+    SpawnCaveTileWithRandomAngle();
 }

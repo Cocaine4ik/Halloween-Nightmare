@@ -11,15 +11,7 @@ class USceneComponent;
 class UStaticMeshComponent;
 class UBoxComponent;
 class UArrowComponent;
-
-UENUM(BlueprintType)
-enum EHNCaveType : uint8
-{
-    CT_Straight = 0     UMETA(DisplayName = "Straight"),
-    CT_Right = 1        UMETA(DisplayName = "Right"),
-    CT_Left = 2         UMETA(DisplayName = "Left"),
-    CT_Curved = 3       UMETA(DisplayName = "Curved"),
-};
+class AHNObstacle;
 
 UCLASS()
 class HALLOWEENNIGHTMARE_API AHNCaveTile : public AActor
@@ -37,23 +29,41 @@ protected:
     UBoxComponent* CaveTriggerBox;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    UBoxComponent* SpawnVolume;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     UArrowComponent* AttachPoint;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tile")
-    TEnumAsByte<EHNCaveType> CaveTypeEnum = EHNCaveType::CT_Straight;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Obstacles")
+    TArray<UStaticMeshComponent*> LeftSideObstacles;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Obstacles")
+    TArray<UStaticMeshComponent*> CenterObstacles;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Obstacles")
+    TArray<UStaticMeshComponent*> RightSideObstacles;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Obstacles")
+    TArray<UStaticMeshComponent*> SmallObstacles;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Obstacles")
+    int32 ObstaclesCountPerSide = 5;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Obstacles")
+    int32 SmallObstaclesCount = 10;
+
+private:
+    TArray<UStaticMeshComponent*> AddObstacleMeshes(int32 Count, const FString PrefixName);
+    void RandomDestroyObstacles(TArray<UStaticMeshComponent*> Obstacles, const int32 MinCount, const int32 MaxCount);
+    void DestroyObstacles(TArray<UStaticMeshComponent*> Obstacles);
 public:
     // Sets default values for this actor's properties
     AHNCaveTile();
-
-protected:
-    // Called when the game starts or when spawned
-    virtual void BeginPlay() override;
+    void RandomDestroyAllObstacles();
+    void DestroyAllObstacles();
+    void SetRandomCaveTileAngle();
 
 public:
     FORCEINLINE const FTransform& GetAttachTransform() const { return AttachPoint->GetComponentTransform(); }
-    // Called every frame
-    virtual void Tick(float DeltaTime) override;
-
-    TEnumAsByte<EHNCaveType> GetCaveType() const { return CaveTypeEnum; }
 };
+

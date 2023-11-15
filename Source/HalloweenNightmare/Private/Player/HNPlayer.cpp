@@ -96,7 +96,7 @@ void AHNPlayer::OnCollision(UPrimitiveComponent* OverlappedComponent, AActor* Ot
     GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("Collision"));
 
     const auto GameMod = Cast<AHNGameMode>(GetWorld()->GetAuthGameMode());
-    GameMod->RandomSpawnCaveTile();
+    GameMod->SpawnCaveTileWithRandomAngle();
 }
 
 void AHNPlayer::MoveRight(const FInputActionValue& Value)
