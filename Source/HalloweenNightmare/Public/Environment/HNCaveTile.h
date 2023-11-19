@@ -63,6 +63,7 @@ public:
     void DestroyAllObstacles();
     void SetRandomCaveTileAngle();
 
+    bool CalculateRandomSpawnLocation(FVector& SpawnLocation);
 public:
     FORCEINLINE const FTransform& GetAttachTransform() const { return AttachPoint->GetComponentTransform(); }
 };

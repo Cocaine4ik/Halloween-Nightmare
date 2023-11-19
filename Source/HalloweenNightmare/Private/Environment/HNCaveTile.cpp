@@ -8,6 +8,9 @@
 #include "Components/SceneComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "HNGameMode.h"
+#include "Kismet/KismetMaterialLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
+
 // Sets default values
 AHNCaveTile::AHNCaveTile()
 {
@@ -112,4 +115,22 @@ void AHNCaveTile::SetRandomCaveTileAngle()
         InitialTileRotation.Yaw + RandomYawRotation, InitialTileRotation.Roll);
     
     SetActorRotation(NewTileRotation);
+}
+
+bool AHNCaveTile::CalculateRandomSpawnLocation(FVector& SpawnLocation)
+{
+    if (!SpawnVolume) return false;
+
+    SpawnVolume->UpdateBounds();
+    const FBoxSphereBounds BoxBounds = SpawnVolume->CalcLocalBounds();
+
+    // Generate random point in local space
+    const FVector RandomPoint = UKismetMathLibrary::RandomPointInBoundingBox(FVector::ZeroVector, BoxBounds.BoxExtent);
+
+    // Transform local random point to world space
+    const auto Location = UKismetMathLibrary::TransformLocation(SpawnVolume->GetComponentTransform(), RandomPoint);
+    
+    SpawnLocation = Location;
+
+    return true;
 }
