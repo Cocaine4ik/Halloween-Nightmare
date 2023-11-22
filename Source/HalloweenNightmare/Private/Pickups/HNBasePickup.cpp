@@ -29,6 +29,7 @@ void AHNBasePickup::BeginPlay()
     Super::BeginPlay();
 
     GenerateRandomRotationYaw();
+    SetActorInitialLocation();
 }
 
 void AHNBasePickup::Invoke()
@@ -60,6 +61,7 @@ void AHNBasePickup::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
     AddActorLocalRotation(FRotator(0.0f, RotationYaw, 0.0f));
+    LiftActor();
 }
 
 void AHNBasePickup::GenerateRandomRotationYaw()
@@ -68,4 +70,27 @@ void AHNBasePickup::GenerateRandomRotationYaw()
     const auto Speed = FMath::FRandRange(MinRotationYawSpeed, MaxRotationYawSpeed);
     
     RotationYaw = Direction * Speed;
+}
+
+void AHNBasePickup::LiftActor()
+{
+    const float CurrentActorLocationZ = GetActorLocation().Z;
+
+
+    if (LiftUp)
+    {
+        SetActorLocation(FVector(InitialLocation.X, InitialLocation.Y, CurrentActorLocationZ + LiftSpeed));
+        if (CurrentActorLocationZ >= InitialLocation.Z + MaxLiftOffset)
+        {
+            LiftUp = false;
+        }
+    }
+    else if (!LiftUp)
+    {
+        SetActorLocation(FVector(InitialLocation.X, InitialLocation.Y, CurrentActorLocationZ - LiftSpeed));
+        if (CurrentActorLocationZ <= InitialLocation.Z)
+        {
+            LiftUp = true;
+        }
+    }
 }
