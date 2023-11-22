@@ -60,8 +60,21 @@ AHNCaveTile* AHNGameMode::SpawnCaveTileWithRandomAngle()
     SpawnedTile->RandomDestroyAllObstacles();
     SpawnedTile->SetRandomCaveTileAngle();
 
-    SpawnPickups(ScorePickupClass, SpawnedTile, PickupsPerTileCount);
-    
+    if (SpawnedTile)
+    {
+        // Spawn score pickups
+        SpawnPickups(ScorePickupClass, SpawnedTile, PickupsPerTileCount);
+
+        // Spawn life pickup
+        CurrentTileCountToSpawnLife++;
+
+        if (CurrentTileCountToSpawnLife == TargetTilesCountToSpawnLife)
+        {
+            CurrentTileCountToSpawnLife = 0;
+            SpawnPickup(LifePickupClass, SpawnedTile);
+        }
+    }
+
     return SpawnedTile;
 }
 
