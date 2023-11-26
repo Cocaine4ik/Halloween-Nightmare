@@ -59,7 +59,8 @@ public:
     void SpawnPickup(TSubclassOf<AHNBasePickup> PickupClass, AHNCaveTile* CaveTile);
     void SpawnPickups(TSubclassOf<AHNBasePickup> PickupClass, AHNCaveTile* CaveTile, const int32 Count);
     virtual void BeginPlay() override;
-    
+
+    void GameOver();
 private:
     AHNCaveTile* SpawnCaveTile(TSubclassOf<AHNCaveTile> CaveTileClass, FTransform AttachPointTransform);
     AHNCaveTile* PreviousCaveTile;

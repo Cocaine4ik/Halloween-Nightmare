@@ -10,6 +10,7 @@
 #include "UI/HNGameHUD.h"
 #include "Environment/HNCaveTile.h"
 #include "Kismet/GameplayStatics.h"
+#include "EngineUtils.h"
 
 AHNGameMode::AHNGameMode()
 {
@@ -110,4 +111,16 @@ void AHNGameMode::BeginPlay()
     SpawnStartCaveTile();
     SpawnCaveTileWithRandomAngle();
     SpawnCaveTileWithRandomAngle();
+}
+
+void AHNGameMode::GameOver()
+{
+    for (auto Pawn : TActorRange<APawn>(GetWorld()))
+    {
+        if (Pawn)
+        {
+            Pawn->TurnOff();
+            Pawn->DisableInput(nullptr);
+        }
+    }
 }
