@@ -42,10 +42,24 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
     UInputAction* LookAction;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player")
     int32 LifeCount = 3;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Invulnerability")
+    float InvulnerabilityTime = 2.0f;
+    
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Invulnerability")
+    TArray<UMaterial*> DefaultMaterials;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Invulnerability")
+    UMaterialInstance* TransparentMaterial;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Invulnerability")
+    bool bIsInvulnerable = false;
     
 private:
+    FTimerHandle InvulnerabilityTimer;
+    
     void MoveRight(const FInputActionValue& Value);
     void MoveUp(const FInputActionValue& Value);
     void MoveForward();
@@ -56,10 +70,17 @@ private:
     virtual void BeginPlay() override;
 
     virtual void Tick(float DeltaSeconds) override;
+
+    void SetInvulnerabilityActive(bool bActive);
+    void StartInvulnerabilityTimer();
+
+    void InitializeDefaultMaterials();
+    void SetDefaultMaterials();
+    void SetTransparentMaterials();
 public:
 
     int32 GetLifeCount() const { return LifeCount; }
-    void AddLife(int32 Value) { LifeCount += Value; }
+    void AddLife(int32 Value);
     void SetMaxFlySpeed(int32 Value) { GetCharacterMovement()->MaxFlySpeed = Value; }
     
     FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -68,4 +89,7 @@ public:
 
     UFUNCTION()
     void OnCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit);
+
+    UFUNCTION()
+    void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 };

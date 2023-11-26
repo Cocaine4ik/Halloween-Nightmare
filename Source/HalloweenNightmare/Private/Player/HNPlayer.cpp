@@ -72,12 +72,95 @@ void AHNPlayer::BeginPlay()
     }
 
     GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AHNPlayer::OnCollision);
+    GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AHNPlayer::OnHit);
+
+    InitializeDefaultMaterials();
 }
 
 void AHNPlayer::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
     MoveForward();
+}
+
+void AHNPlayer::SetInvulnerabilityActive(bool bActive)
+{
+    if (bActive)
+    {
+        bIsInvulnerable = true;
+        
+        GetCapsuleComponent()->SetCollisionProfileName(FName("OverlapObstacles"));
+        SetTransparentMaterials();
+        
+        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green,
+            FString::Printf(TEXT("Invulnerability Activated")));
+        
+    }
+    else
+    {
+        bIsInvulnerable = false;
+        
+        GetCapsuleComponent()->SetCollisionProfileName(FName("Pawn"));
+        SetDefaultMaterials();
+        
+        GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
+    FString::Printf(TEXT("Invulnerability Deactivated")));
+    }
+}
+
+void AHNPlayer::StartInvulnerabilityTimer()
+{
+    SetInvulnerabilityActive(true);
+    auto SetInvulnerabilityActiveFalse = [this]() {SetInvulnerabilityActive(false);};
+    FTimerDelegate InvulnerabilityTimerDelegate;
+    InvulnerabilityTimerDelegate.BindLambda(SetInvulnerabilityActiveFalse);
+        
+    GetWorldTimerManager().SetTimer(InvulnerabilityTimer, InvulnerabilityTimerDelegate, InvulnerabilityTime, false);
+}
+
+void AHNPlayer::InitializeDefaultMaterials()
+{
+    const auto Materials = GetMesh()->GetMaterials();
+
+    for (int i = 0; i < Materials.Num(); i++)
+    {
+        const auto Material = Materials[i]->GetMaterial();
+        DefaultMaterials.Insert(Material, i);
+    }
+}
+
+void AHNPlayer::SetDefaultMaterials()
+{
+    if (DefaultMaterials.Num() == 0) return;
+    
+    for (int i = 0; i < DefaultMaterials.Num(); i++)
+    {
+        const auto Material = DefaultMaterials[i];
+        GetMesh()->SetMaterial(i, Material);
+    }
+}
+
+void AHNPlayer::SetTransparentMaterials()
+{
+    if (!TransparentMaterial || DefaultMaterials.Num() == 0) return;
+
+    for (int i = 0; i < DefaultMaterials.Num(); i++)
+    {
+        GetMesh()->SetMaterial(i, TransparentMaterial);
+    }
+}
+
+void AHNPlayer::AddLife(int32 Value)
+{
+    const int32 LifeCountValue = LifeCount + Value;
+    
+    LifeCountValue < 0 ? LifeCount = 0 : LifeCount = LifeCountValue;
+
+    if (LifeCount == 0)
+    {
+        const auto GameMode = Cast<AHNGameMode>(GetWorld()->GetAuthGameMode());
+        GameMode->GameOver();
+    }
 }
 
 AHNPlayerController* AHNPlayer::GetPlayerController() const
@@ -92,11 +175,24 @@ void AHNPlayer::OnCollision(UPrimitiveComponent* OverlappedComponent, AActor* Ot
     int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
     // if (OverlappedComponent->GetName() != "Cave Trigger Box") return;
-    
-    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("Collision"));
 
     const auto GameMod = Cast<AHNGameMode>(GetWorld()->GetAuthGameMode());
     GameMod->SpawnCaveTileWithRandomAngle();
+}
+
+void AHNPlayer::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse,
+    const FHitResult& Hit)
+{
+    const auto ProfileName = OtherComponent->GetCollisionProfileName().ToString();
+
+    if (ProfileName == "Obstacle" || ProfileName == "Cave")
+    {
+        if (!bIsInvulnerable)
+        {
+            AddLife(-1);
+            StartInvulnerabilityTimer();
+        }
+    }
 }
 
 void AHNPlayer::MoveRight(const FInputActionValue& Value)
