@@ -17,6 +17,9 @@ class HALLOWEENNIGHTMARE_API UHNPlayerHUDWidget : public UUserWidget
 public:
     UFUNCTION(BlueprintCallable, Category = "UI")
     FString GetScoreText() const;
+
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    FString GetLifeCountText() const;
     
 private:
     int32 GetLifeCount() const;

@@ -14,6 +14,15 @@ FString UHNPlayerHUDWidget::GetScoreText() const
     return FString::Printf(TEXT("/0%i"), Score);
 }
 
+FString UHNPlayerHUDWidget::GetLifeCountText() const
+{
+    const auto LifeCount = GetLifeCount();
+    
+    if (LifeCount / 10) return FString::Printf(TEXT("/%i"), LifeCount);
+
+    return FString::Printf(TEXT("/0%i"), LifeCount);
+}
+
 int32 UHNPlayerHUDWidget::GetLifeCount() const
 {
     const auto Player = Cast<AHNPlayer>(GetOwningPlayer()->GetPawn());
