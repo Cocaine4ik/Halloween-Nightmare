@@ -60,7 +60,7 @@ void AHNBasePickup::NotifyActorEndOverlap(AActor* OtherActor)
 void AHNBasePickup::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    AddActorLocalRotation(FRotator(0.0f, RotationYaw, 0.0f));
+    RotateYawActor();
     LiftActor();
 }
 
@@ -72,8 +72,17 @@ void AHNBasePickup::GenerateRandomRotationYaw()
     RotationYaw = Direction * Speed;
 }
 
+void AHNBasePickup::RotateYawActor()
+{
+    if (!bHaveRotation) return;
+    
+    AddActorLocalRotation(FRotator(0.0f, RotationYaw, 0.0f));
+}
+
 void AHNBasePickup::LiftActor()
 {
+    if (!bHaveLift) return;
+    
     const float CurrentActorLocationZ = GetActorLocation().Z;
 
 

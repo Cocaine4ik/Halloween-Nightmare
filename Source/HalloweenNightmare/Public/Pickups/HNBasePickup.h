@@ -28,17 +28,24 @@ protected:
     USphereComponent* CollisionComponent;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Rotation")
+    bool bHaveRotation = true;
+    
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Rotation")
     float MinRotationYawSpeed = 0.1f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Rotation")
     float MaxRotationYawSpeed = 0.5f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Lift")
+    bool bHaveLift = true;
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Lift")
     float MaxLiftOffset = 3.0f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Lift")
     float LiftSpeed = 0.1f;
-
+    
+    
     AHNPlayer* Player;
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
@@ -50,12 +57,14 @@ protected:
 public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
-
+    
 private:
     float RotationYaw;
     FVector InitialLocation;
     bool LiftUp = true;
     void GenerateRandomRotationYaw();
     void SetActorInitialLocation() { InitialLocation = GetActorLocation(); }
+    void RotateYawActor();
     void LiftActor();
+    
 };
