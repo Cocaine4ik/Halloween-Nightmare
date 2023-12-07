@@ -21,3 +21,14 @@ struct FDestroyedObstaclesData
     int32 MaxSmallObstaclesCount = 6;
     
 };
+
+UENUM(BlueprintType)
+enum class EHNGameState : uint8
+{
+    WaitingToStart = 0,
+    InProgress,
+    Pause,
+    GaveOver
+};
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnGameStateChangedSignature, EHNGameState);

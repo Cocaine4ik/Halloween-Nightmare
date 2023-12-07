@@ -113,6 +113,12 @@ void AHNGameMode::BeginPlay()
     SpawnCaveTileWithRandomAngle();
 }
 
+void AHNGameMode::StartPlay()
+{
+    Super::StartPlay();
+    SetGameState(EHNGameState::InProgress);
+}
+
 void AHNGameMode::GameOver()
 {
     for (auto Pawn : TActorRange<APawn>(GetWorld()))
@@ -123,4 +129,42 @@ void AHNGameMode::GameOver()
             Pawn->DisableInput(nullptr);
         }
     }
+}
+
+bool AHNGameMode::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate)
+{
+    const bool bPauseSet = Super::SetPause(PC, CanUnpauseDelegate);
+
+    if (bPauseSet)
+    {
+        SetGameState(EHNGameState::Pause);
+    }
+    return bPauseSet;
+}
+
+bool AHNGameMode::ClearPause()
+{
+    const bool bPauseClear = Super::ClearPause();
+
+    if (bPauseClear)
+    {
+        SetGameState(EHNGameState::InProgress);
+    }
+    
+    return bPauseClear;
+}
+
+void AHNGameMode::RestartGame()
+{
+}
+
+void AHNGameMode::SetGameState(EHNGameState State)
+{
+    if (GameState == State) return;
+
+    GameState = State;
+    OnGameStateChanged.Broadcast(State);
+
+    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange,
+        FString::Printf(TEXT("State Changed")));
 }

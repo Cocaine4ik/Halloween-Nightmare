@@ -23,6 +23,8 @@ class HALLOWEENNIGHTMARE_API AHNGameMode : public AGameModeBase
 public:
     AHNGameMode();
 
+    FOnGameStateChangedSignature OnGameStateChanged;
+    
 protected:
     
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score")
@@ -49,6 +51,8 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickups")
     int32 TargetTilesCountToSpawnLife = 5;
 private:
+    EHNGameState GameState = EHNGameState::WaitingToStart;
+    
     int32 CurrentTileCountToSpawnLife = 0;
 public:
     int32 GetScore() const { return Score; }
@@ -59,8 +63,14 @@ public:
     void SpawnPickup(TSubclassOf<AHNBasePickup> PickupClass, AHNCaveTile* CaveTile);
     void SpawnPickups(TSubclassOf<AHNBasePickup> PickupClass, AHNCaveTile* CaveTile, const int32 Count);
     virtual void BeginPlay() override;
+    virtual void StartPlay() override;
 
     void GameOver();
+    virtual bool SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate) override;
+    virtual bool ClearPause() override;
+    void RestartGame();
+
+    void SetGameState(EHNGameState State);
 private:
     AHNCaveTile* SpawnCaveTile(TSubclassOf<AHNCaveTile> CaveTileClass, FTransform AttachPointTransform);
     AHNCaveTile* PreviousCaveTile;
