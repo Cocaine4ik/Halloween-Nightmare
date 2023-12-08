@@ -121,6 +121,8 @@ void AHNGameMode::StartPlay()
 
 void AHNGameMode::GameOver()
 {
+    SetGameState(EHNGameState::GameOver);
+    
     for (auto Pawn : TActorRange<APawn>(GetWorld()))
     {
         if (Pawn)

@@ -4,13 +4,15 @@
 #include "UI/HNGameHUD.h"
 #include "Blueprint/UserWidget.h"
 #include "HNGameMode.h"
+
 void AHNGameHUD::BeginPlay()
 {
     Super::BeginPlay();
     
     GameWidgets.Add(EHNGameState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
     GameWidgets.Add(EHNGameState::Pause, CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass));
-
+    GameWidgets.Add(EHNGameState::GameOver, CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass));
+    
     for (auto GameWidgetPair : GameWidgets)
     {
         const auto GameWidget = GameWidgetPair.Value;
