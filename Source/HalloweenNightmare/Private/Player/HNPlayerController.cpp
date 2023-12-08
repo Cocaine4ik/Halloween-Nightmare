@@ -4,7 +4,6 @@
 #include "Player/HNPlayerController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "GameFramework/GameModeBase.h"
 #include "HNGameMode.h"
 
 void AHNPlayerController::SetupInputComponent()
@@ -35,12 +34,14 @@ void AHNPlayerController::OnPauseGame(const FInputActionValue& Value)
 {
     if (!GetWorld()) return;
 
-    if (const auto GameMode = GetWorld()->GetAuthGameMode())
+    if (const auto GameMode = Cast<AHNGameMode>(GetWorld()->GetAuthGameMode()))
     {
+        if (GameMode->GetGameState() == EHNGameState::GameOver) return;
+        
         GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green,
             FString::Printf(TEXT("On Pause")));
         
-        bIsPaused ? GameMode->ClearPause() : GameMode->SetPause(this);
+        bIsPaused ? GameMode->ClearPause() : GameMode->SetPause(this, FCanUnpause());
     }
 }
 

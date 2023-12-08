@@ -71,6 +71,7 @@ public:
     void RestartGame();
 
     void SetGameState(EHNGameState State);
+    EHNGameState GetGameState() const { return GameState; }
 private:
     AHNCaveTile* SpawnCaveTile(TSubclassOf<AHNCaveTile> CaveTileClass, FTransform AttachPointTransform);
     AHNCaveTile* PreviousCaveTile;
