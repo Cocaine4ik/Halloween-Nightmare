@@ -11,8 +11,6 @@ void UHNTextButtonWidget::NativeOnInitialized()
     Super::NativeOnInitialized();
 
     DefaultTextColor = TextBlock->GetColorAndOpacity();
-
-    TextBlock->SetText(ButtonText);
 }
 
 void UHNTextButtonWidget::SetTextHoverColor()

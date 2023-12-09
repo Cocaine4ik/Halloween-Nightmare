@@ -5,11 +5,13 @@
 #include "HNTextButtonWidget.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+#include "HNGameInstance.h"
 
 void UHNBasePauseWidget::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
 
+    
     if (MainMenuTextButtonWidget)
     {
         MainMenuTextButtonWidget->GetButton()->OnClicked.AddDynamic(this, &UHNBasePauseWidget::OnMainMenu);
@@ -38,4 +40,11 @@ void UHNBasePauseWidget::OnRestart()
 
 void UHNBasePauseWidget::OnMainMenu()
 {
+    if (!GetWorld()) return;
+
+    const auto HNGameInstance = GetWorld()->GetGameInstance<UHNGameInstance>();
+
+    if (!HNGameInstance || HNGameInstance->GetMainMenuLevelName().IsNone()) return;;
+
+    UGameplayStatics::OpenLevel(this, HNGameInstance->GetMainMenuLevelName());
 }

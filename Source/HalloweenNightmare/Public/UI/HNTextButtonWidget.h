@@ -25,12 +25,6 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Text Style")
     FSlateColor HoverColor;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Text Style")
-    FLinearColor HoverOutlineColor;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Text Style")
-    FText ButtonText;
-
     virtual void NativeOnInitialized() override;
 
 public:

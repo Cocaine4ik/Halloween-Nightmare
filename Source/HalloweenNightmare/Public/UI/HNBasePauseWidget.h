@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "HNCoreTypes.h"
 #include "HNBasePauseWidget.generated.h"
 
-class UTextBlock;
 class UHNTextButtonWidget;
 
 UCLASS()

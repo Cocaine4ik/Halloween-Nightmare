@@ -27,22 +27,22 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     USphereComponent* CollisionComponent;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Rotation")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
     bool bHaveRotation = true;
     
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Rotation")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
     float MinRotationYawSpeed = 0.1f;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Rotation")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation")
     float MaxRotationYawSpeed = 0.5f;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Lift")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lift")
     bool bHaveLift = true;
     
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Lift")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lift")
     float MaxLiftOffset = 3.0f;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Lift")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lift")
     float LiftSpeed = 0.1f;
     
     
