@@ -8,6 +8,7 @@
 #include "HNCoreTypes.h"
 #include "HNGameMode.generated.h"
 
+class UDataTable;
 class AHNLifePickup;
 class AHNCaveTile;
 class AHNScorePickup;
@@ -50,6 +51,10 @@ protected:
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickups")
     int32 TargetTilesCountToSpawnLife = 5;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
+    UDataTable* ScoresDataTable;
+    
 private:
     EHNGameState GameState = EHNGameState::WaitingToStart;
     
@@ -72,6 +77,8 @@ public:
 
     void SetGameState(EHNGameState State);
     EHNGameState GetGameState() const { return GameState; }
+
+    void SaveScore();
 private:
     AHNCaveTile* SpawnCaveTile(TSubclassOf<AHNCaveTile> CaveTileClass, FTransform AttachPointTransform);
     AHNCaveTile* PreviousCaveTile;

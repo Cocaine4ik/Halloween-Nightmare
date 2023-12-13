@@ -23,4 +23,11 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     FName MainMenuLevelName = NAME_None;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "User")
+    FName UserName = "USER";
+
+public:
+    FName GetUserName() const { return UserName; }
+    void SetUserName(const FName Name) { UserName = Name; }
 };

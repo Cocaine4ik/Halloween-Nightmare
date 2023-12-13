@@ -2,7 +2,6 @@
 
 
 #include "HNGameMode.h"
-
 #include "HNScorePickup.h"
 #include "HNLifePickup.h"
 #include "Player/HNPlayer.h"
@@ -11,12 +10,41 @@
 #include "Environment/HNCaveTile.h"
 #include "Kismet/GameplayStatics.h"
 #include "EngineUtils.h"
+#include "HNGameInstance.h"
+#include "Data/HNScoreStruct.h"
+#include "Engine/DataTable.h"
 
 AHNGameMode::AHNGameMode()
 {
     DefaultPawnClass = AHNPlayer::StaticClass();
     PlayerControllerClass = AHNPlayerController::StaticClass();
     HUDClass = AHNGameHUD::StaticClass();
+}
+
+void AHNGameMode::SaveScore()
+{
+    if (!GetWorld() || !ScoresDataTable) return;
+
+    if(const auto HNGameInstance = GetWorld()->GetGameInstance<UHNGameInstance>())
+    {
+        const FName UserName = HNGameInstance->GetUserName();
+        const FDateTime CurrentDateTime(FDateTime::Now());
+        
+        FHNScoreStruct ScoreStruct;
+        
+        ScoreStruct.Score = Score;
+        ScoreStruct.UserName = UserName;
+        ScoreStruct.DateTime = CurrentDateTime;
+
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,
+            FString::Printf(TEXT("DATE TIME: %s"), *ScoreStruct.DateTime.ToString()));
+
+        // Use rows number as row ID
+        const auto RowsNumString = FString::FromInt(ScoresDataTable->GetRowNames().Num());
+        const FName NewRowID(RowsNumString);
+        
+        ScoresDataTable->AddRow(NewRowID, ScoreStruct);
+    }
 }
 
 AHNCaveTile* AHNGameMode::SpawnCaveTile(TSubclassOf<AHNCaveTile> CaveTileClass, FTransform AttachPointTransform)

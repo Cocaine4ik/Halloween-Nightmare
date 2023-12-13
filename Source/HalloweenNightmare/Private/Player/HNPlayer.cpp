@@ -160,6 +160,7 @@ void AHNPlayer::AddLife(int32 Value)
     {
         const auto GameMode = Cast<AHNGameMode>(GetWorld()->GetAuthGameMode());
         GameMode->GameOver();
+        GameMode->SaveScore();
     }
 }
 
