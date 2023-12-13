@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "HNMenuWidget.generated.h"
 
+class UEditableText;
 class UHNTextButtonWidget;
 
 UCLASS()
@@ -25,6 +26,9 @@ protected:
 
     UPROPERTY(Transient, meta = (BindWidgetAnim))
     UWidgetAnimation* HideAnimation;
+
+    UPROPERTY(meta = (BindWidget))
+    UEditableText* UserNameEditableText;
     
     virtual void NativeOnInitialized() override;
     virtual void OnAnimationFinished_Implementation(const UWidgetAnimation* Animation) override;
@@ -40,4 +44,9 @@ private:
 
     UFUNCTION()
     void OnQuitGame();
+
+    UFUNCTION()
+    void OnUsernameCommitted(const FText& Text, ETextCommit::Type CommitMethod);
+
+    FText GetUserName() const;
 };

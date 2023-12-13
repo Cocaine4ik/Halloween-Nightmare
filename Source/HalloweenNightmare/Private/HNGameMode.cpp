@@ -36,8 +36,10 @@ void AHNGameMode::SaveScore()
         ScoreStruct.UserName = UserName;
         ScoreStruct.DateTime = CurrentDateTime;
 
+        /*
         GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,
             FString::Printf(TEXT("DATE TIME: %s"), *ScoreStruct.DateTime.ToString()));
+            */
 
         // Use rows number as row ID
         const auto RowsNumString = FString::FromInt(ScoresDataTable->GetRowNames().Num());

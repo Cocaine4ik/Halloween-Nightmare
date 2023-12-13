@@ -6,9 +6,6 @@
 #include "Engine/GameInstance.h"
 #include "HNGameInstance.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class HALLOWEENNIGHTMARE_API UHNGameInstance : public UGameInstance
 {
@@ -25,7 +22,7 @@ protected:
     FName MainMenuLevelName = NAME_None;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "User")
-    FName UserName = "USER";
+    FName UserName = "User";
 
 public:
     FName GetUserName() const { return UserName; }
