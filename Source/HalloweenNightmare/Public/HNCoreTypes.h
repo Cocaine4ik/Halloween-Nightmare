@@ -1,26 +1,15 @@
 // Halloween Nightmare. All Rights Reserved.
 
 #pragma once
+#include "Engine/DataTable.h"
+#include "Engine/DataAsset.h"
 #include "HNCoreTypes.generated.h"
 
-USTRUCT(BlueprintType)
-struct FDestroyedObstaclesData
-{
-    GENERATED_USTRUCT_BODY()
+// Delegates
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Environment")
-    int32 MinObstaclesCount = 2;
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnGameStateChangedSignature, EHNGameState);
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Environment")
-    int32 MaxObstaclesCount = 4;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Environment")
-    int32 MinSmallObstaclesCount = 3;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Environment")
-    int32 MaxSmallObstaclesCount = 6;
-    
-};
+// Enums
 
 UENUM(BlueprintType)
 enum class EHNGameState : uint8
@@ -28,7 +17,76 @@ enum class EHNGameState : uint8
     WaitingToStart = 0,
     InProgress,
     Pause,
-    GameOver
+    GameOver,
+    Menu,
+    Scores,
+    Levels
 };
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnGameStateChangedSignature, EHNGameState);
+UENUM(BlueprintType)
+enum class EHNLevel : uint8
+{
+    Default = 0,
+    Hard,
+    Nightmare
+};
+
+// Structs
+
+USTRUCT(BlueprintType)
+struct FHNLevelData : public FTableRowBase
+{
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Level")
+    int32 MinDestroyObstaclesCount = 2;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Level")
+    int32 MaxDestroyObstaclesCount = 4;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Level")
+    int32 MinDestroySmallObstaclesCount = 3;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Level")
+    int32 MaxDestroySmallObstaclesCount = 6;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickups")
+    int32 PickupsPerTileCount = 8;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickups")
+    int32 TargetTilesCountToSpawnLife = 5;
+};
+
+USTRUCT(BlueprintType)
+struct FHNScoresData : public FTableRowBase
+{
+    GENERATED_USTRUCT_BODY()
+    
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data")
+    FName UserName;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data")
+    FName LevelName;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data")
+    int32 Score;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Data")
+    FDateTime DateTime;
+};
+
+// Data Assets
+
+UCLASS()
+class HALLOWEENNIGHTMARE_API UHNUserNameDataAsset : public UDataAsset
+{
+    GENERATED_BODY()
+
+protected:
+    UPROPERTY(EditAnywhere)
+    FName UserName = "User";
+
+public:
+    FORCEINLINE FName GetUserName() const { return UserName; } 
+    FORCEINLINE void SetUserName(const FName Name) { UserName = Name; }
+};

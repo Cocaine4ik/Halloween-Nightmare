@@ -1,7 +1,7 @@
 // Halloween Nightmare. All Rights Reserved.
 
 
-#include "Environment/HNCaveTile.h"
+#include "Levels/HNCaveTile.h"
 
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
@@ -46,10 +46,10 @@ void AHNCaveTile::RandomDestroyAllObstacles()
     const auto GameMode = Cast<AHNGameMode>(GetWorld()->GetAuthGameMode());
     const auto DestroyedObstaclesData = GameMode->GetDestroyedObstaclesData();
     
-    const auto MinDestroyedObstaclesCount = DestroyedObstaclesData.MinObstaclesCount;
-    const auto MaxDestroyedObstaclesCount = DestroyedObstaclesData.MaxObstaclesCount;
-    const auto MinDestroyedSmallObstaclesCount = DestroyedObstaclesData.MinSmallObstaclesCount;
-    const auto MaxDestroyedSmallObstaclesCount = DestroyedObstaclesData.MaxSmallObstaclesCount;
+    const auto MinDestroyedObstaclesCount = DestroyedObstaclesData.MinDestroyObstaclesCount;
+    const auto MaxDestroyedObstaclesCount = DestroyedObstaclesData.MaxDestroyObstaclesCount;
+    const auto MinDestroyedSmallObstaclesCount = DestroyedObstaclesData.MinDestroySmallObstaclesCount;
+    const auto MaxDestroyedSmallObstaclesCount = DestroyedObstaclesData.MaxDestroySmallObstaclesCount;
     
     RandomDestroyObstacles(LeftSideObstacles, MinDestroyedObstaclesCount, MaxDestroyedObstaclesCount);
     RandomDestroyObstacles(CenterObstacles, MinDestroyedObstaclesCount, MaxDestroyedObstaclesCount);

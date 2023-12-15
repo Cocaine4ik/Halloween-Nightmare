@@ -6,14 +6,9 @@
 
 void AHNMenuHUD::BeginPlay()
 {
+    GameWidgets.Add(EHNGameState::Menu, CreateWidget<UUserWidget>(GetWorld(), MenuWidgetClass));
+    GameWidgets.Add(EHNGameState::Scores, CreateWidget<UUserWidget>(GetWorld(), ScoresWidgetClass));
+    GameWidgets.Add(EHNGameState::Levels, CreateWidget<UUserWidget>(GetWorld(), LevelsWidgetClass));
+    
     Super::BeginPlay();
-
-    if (MenuWidgetClass)
-    {
-
-        if (const auto MenuWidget = CreateWidget<UUserWidget>(GetWorld(), MenuWidgetClass))
-        {
-            MenuWidget->AddToViewport();
-        }
-    }
 }

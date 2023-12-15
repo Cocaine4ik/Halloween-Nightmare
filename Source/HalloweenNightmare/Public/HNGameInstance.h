@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "HNCoreTypes.h"
 #include "HNGameInstance.generated.h"
 
 UCLASS()
@@ -21,10 +22,17 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     FName MainMenuLevelName = NAME_None;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "User")
-    FName UserName = "User";
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Game")
+    UDataAsset* UserNameDataAsset;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game")
+    EHNLevel CurrentLevel = EHNLevel::Default;
+    
 public:
-    FName GetUserName() const { return UserName; }
-    void SetUserName(const FName Name) { UserName = Name; }
+    FName GetUserName() const;
+    void SetUserName(const FName Name);
+
+    FORCEINLINE EHNLevel GetLevel() const { return CurrentLevel; }
+    FORCEINLINE void SetLevel(EHNLevel Level) { CurrentLevel = Level; }
+    FName GetLevelName() const;
 };

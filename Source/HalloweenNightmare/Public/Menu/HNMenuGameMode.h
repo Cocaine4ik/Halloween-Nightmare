@@ -3,17 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "HNGameModeBase.h"
 #include "HNMenuGameMode.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
-class HALLOWEENNIGHTMARE_API AHNMenuGameMode : public AGameModeBase
+class HALLOWEENNIGHTMARE_API AHNMenuGameMode : public AHNGameModeBase
 {
     GENERATED_BODY()
 
 public:
     AHNMenuGameMode();
+
+    virtual void StartPlay() override;
 };

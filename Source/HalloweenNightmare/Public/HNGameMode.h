@@ -4,8 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "HNCaveTile.h"
-#include "GameFramework/GameModeBase.h"
-#include "HNCoreTypes.h"
+#include "HNGameModeBase.h"
 #include "HNGameMode.generated.h"
 
 class UDataTable;
@@ -13,32 +12,26 @@ class AHNLifePickup;
 class AHNCaveTile;
 class AHNScorePickup;
 class AHNBasePickup;
-/**
- * 
- */
+
+
 UCLASS()
-class HALLOWEENNIGHTMARE_API AHNGameMode : public AGameModeBase
+class HALLOWEENNIGHTMARE_API AHNGameMode : public AHNGameModeBase
 {
     GENERATED_BODY()
 
 public:
     AHNGameMode();
-
-    FOnGameStateChangedSignature OnGameStateChanged;
     
 protected:
     
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score")
     int32 Score = 0;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Environment")
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Level")
     TSubclassOf<AHNCaveTile> DefaultCaveTileClass;
-    
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Environment")
-    int32 TilesCount = 10;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Environment")
-    FDestroyedObstaclesData DestroyedObstaclesData;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Level")
+    FHNLevelData LevelData;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickups")
     TSubclassOf<AHNScorePickup> ScorePickupClass;
@@ -46,27 +39,26 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickups")
     TSubclassOf<AHNLifePickup> LifePickupClass;
     
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickups")
-    int32 PickupsPerTileCount = 8;
-    
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickups")
-    int32 TargetTilesCountToSpawnLife = 5;
-
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
     UDataTable* ScoresDataTable;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
+    UDataTable* LevelsDataTable;
     
 private:
-    EHNGameState GameState = EHNGameState::WaitingToStart;
-    
     int32 CurrentTileCountToSpawnLife = 0;
+    
 public:
     int32 GetScore() const { return Score; }
     void AddScore(const int32 Value) { Score += Value; }
-    FDestroyedObstaclesData GetDestroyedObstaclesData() const { return DestroyedObstaclesData; }
+    
+    FHNLevelData GetDestroyedObstaclesData() const { return LevelData; }
     AHNCaveTile* SpawnStartCaveTile();
     AHNCaveTile* SpawnCaveTileWithRandomAngle();
+    
     void SpawnPickup(TSubclassOf<AHNBasePickup> PickupClass, AHNCaveTile* CaveTile);
     void SpawnPickups(TSubclassOf<AHNBasePickup> PickupClass, AHNCaveTile* CaveTile, const int32 Count);
+    
     virtual void BeginPlay() override;
     virtual void StartPlay() override;
 
@@ -75,11 +67,11 @@ public:
     virtual bool ClearPause() override;
     void RestartGame();
 
-    void SetGameState(EHNGameState State);
-    EHNGameState GetGameState() const { return GameState; }
-
     void SaveScore();
 private:
     AHNCaveTile* SpawnCaveTile(TSubclassOf<AHNCaveTile> CaveTileClass, FTransform AttachPointTransform);
     AHNCaveTile* PreviousCaveTile;
+
+    void LoadLevelData();
+    FHNLevelData GetLevelData(FName LevelName) const;
 };

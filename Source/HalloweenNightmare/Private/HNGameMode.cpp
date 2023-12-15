@@ -7,11 +7,10 @@
 #include "Player/HNPlayer.h"
 #include "Player/HNPlayerController.h"
 #include "UI/HNGameHUD.h"
-#include "Environment/HNCaveTile.h"
+#include "Levels/HNCaveTile.h"
 #include "Kismet/GameplayStatics.h"
 #include "EngineUtils.h"
 #include "HNGameInstance.h"
-#include "Data/HNScoreStruct.h"
 #include "Engine/DataTable.h"
 
 AHNGameMode::AHNGameMode()
@@ -29,12 +28,14 @@ void AHNGameMode::SaveScore()
     {
         const FName UserName = HNGameInstance->GetUserName();
         const FDateTime CurrentDateTime(FDateTime::Now());
+        const FName LevelName = HNGameInstance->GetLevelName();
         
-        FHNScoreStruct ScoreStruct;
+        FHNScoresData ScoresData;
         
-        ScoreStruct.Score = Score;
-        ScoreStruct.UserName = UserName;
-        ScoreStruct.DateTime = CurrentDateTime;
+        ScoresData.Score = Score;
+        ScoresData.UserName = UserName;
+        ScoresData.LevelName = LevelName;
+        ScoresData.DateTime = CurrentDateTime;
 
         /*
         GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,
@@ -45,7 +46,7 @@ void AHNGameMode::SaveScore()
         const auto RowsNumString = FString::FromInt(ScoresDataTable->GetRowNames().Num());
         const FName NewRowID(RowsNumString);
         
-        ScoresDataTable->AddRow(NewRowID, ScoreStruct);
+        ScoresDataTable->AddRow(NewRowID, ScoresData);
     }
 }
 
@@ -66,7 +67,7 @@ AHNCaveTile* AHNGameMode::SpawnCaveTile(TSubclassOf<AHNCaveTile> CaveTileClass, 
     {
         PreviousCaveTile = CaveTile;
         CurrentTileCountToSpawnLife++;
-        if (CurrentTileCountToSpawnLife == TargetTilesCountToSpawnLife)
+        if (CurrentTileCountToSpawnLife == LevelData.TargetTilesCountToSpawnLife)
         {
             CurrentTileCountToSpawnLife = 0;
             SpawnPickup(LifePickupClass, CaveTile);
@@ -74,6 +75,36 @@ AHNCaveTile* AHNGameMode::SpawnCaveTile(TSubclassOf<AHNCaveTile> CaveTileClass, 
     }
     
     return CaveTile;
+}
+
+void AHNGameMode::LoadLevelData()
+{
+    if (!GetWorld()) return;
+
+    if (const auto GameInstance = GetWorld()->GetGameInstance<UHNGameInstance>())
+    {
+        const EHNLevel Level = GameInstance->GetLevel();
+
+        switch (Level)
+        {
+            case EHNLevel::Hard: LevelData = GetLevelData(FName("Hard")); break;
+            case EHNLevel::Nightmare: LevelData = GetLevelData(FName("Nightmare")); break;
+
+            default: LevelData = GetLevelData(FName("Default")); break;
+        }
+    }
+}
+
+FHNLevelData AHNGameMode::GetLevelData(FName LevelName) const
+{
+    if (!LevelsDataTable) return LevelData;
+    
+    if (const auto Data = LevelsDataTable->FindRow<FHNLevelData>(LevelName, ""))
+    {
+        return *Data;
+    }
+
+    return LevelData;
 }
 
 AHNCaveTile* AHNGameMode::SpawnStartCaveTile()
@@ -94,12 +125,12 @@ AHNCaveTile* AHNGameMode::SpawnCaveTileWithRandomAngle()
     if (SpawnedTile)
     {
         // Spawn score pickups
-        SpawnPickups(ScorePickupClass, SpawnedTile, PickupsPerTileCount);
+        SpawnPickups(ScorePickupClass, SpawnedTile, LevelData.PickupsPerTileCount);
 
         // Spawn life pickup
         CurrentTileCountToSpawnLife++;
 
-        if (CurrentTileCountToSpawnLife == TargetTilesCountToSpawnLife)
+        if (CurrentTileCountToSpawnLife == LevelData.TargetTilesCountToSpawnLife)
         {
             CurrentTileCountToSpawnLife = 0;
             SpawnPickup(LifePickupClass, SpawnedTile);
@@ -138,6 +169,8 @@ void AHNGameMode::BeginPlay()
 {
     Super::BeginPlay();
 
+    LoadLevelData();
+    
     SpawnStartCaveTile();
     SpawnCaveTileWithRandomAngle();
     SpawnCaveTileWithRandomAngle();
@@ -188,15 +221,4 @@ bool AHNGameMode::ClearPause()
 
 void AHNGameMode::RestartGame()
 {
-}
-
-void AHNGameMode::SetGameState(EHNGameState State)
-{
-    if (GameState == State) return;
-
-    GameState = State;
-    OnGameStateChanged.Broadcast(State);
-
-    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Orange,
-        FString::Printf(TEXT("State Changed")));
 }

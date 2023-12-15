@@ -4,8 +4,8 @@
 #include "Menu/UI/HNMenuWidget.h"
 
 #include "HNGameInstance.h"
+#include "HNGameModeBase.h"
 #include "Components/Button.h"
-#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "UI/HNTextButtonWidget.h"
 #include "Components/EditableText.h"
@@ -46,25 +46,24 @@ void UHNMenuWidget::NativeOnInitialized()
     }
 }
 
-void UHNMenuWidget::OnAnimationFinished_Implementation(const UWidgetAnimation* Animation)
-{
-    if (Animation != HideAnimation) return;
-    if (!GetWorld()) return;
-
-    const auto HNGameInstance = GetWorld()->GetGameInstance<UHNGameInstance>();
-
-    if (!HNGameInstance || HNGameInstance->GetStartupLevelName().IsNone()) return;
-
-    UGameplayStatics::OpenLevel(this, HNGameInstance->GetStartupLevelName());
-}
-
 void UHNMenuWidget::OnNewGame()
 {
-    PlayAnimation(HideAnimation);
+    if (!GetWorld()) return;
+
+    if (const auto GameMode = Cast<AHNGameModeBase>(GetWorld()->GetAuthGameMode()))
+    {
+        GameMode->SetGameState(EHNGameState::Levels);
+    }
 }
 
 void UHNMenuWidget::OnShowScores()
 {
+    if (!GetWorld()) return;
+
+    if (const auto GameMode = Cast<AHNGameModeBase>(GetWorld()->GetAuthGameMode()))
+    {
+        GameMode->SetGameState(EHNGameState::Scores);
+    }
 }
 
 void UHNMenuWidget::OnQuitGame()

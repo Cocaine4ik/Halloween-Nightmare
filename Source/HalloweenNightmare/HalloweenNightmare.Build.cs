@@ -14,8 +14,9 @@ public class HalloweenNightmare : ModuleRules
 		{
 		"HalloweenNightmare/Public/Player",
 		"HalloweenNightmare/Public/UI",
-		"HalloweenNightmare/Public/Environment",
-		"HalloweenNightmare/Public/Pickups"
+		"HalloweenNightmare/Public/Levels",
+		"HalloweenNightmare/Public/Pickups",
+		"HalloweenNightmare/Public/Menu"
 		});
 	}
 }

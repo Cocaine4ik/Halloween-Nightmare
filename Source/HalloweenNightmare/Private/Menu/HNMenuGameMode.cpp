@@ -10,3 +10,9 @@ AHNMenuGameMode::AHNMenuGameMode()
     PlayerControllerClass = AHNMenuPlayerController::StaticClass();
     HUDClass = AHNMenuHUD::StaticClass();
 }
+
+void AHNMenuGameMode::StartPlay()
+{
+    Super::StartPlay();
+    SetGameState(EHNGameState::Menu);
+}

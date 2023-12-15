@@ -24,14 +24,10 @@ protected:
     UPROPERTY(meta = (BindWidget))
     UHNTextButtonWidget* QuitTextButtonWidget;
 
-    UPROPERTY(Transient, meta = (BindWidgetAnim))
-    UWidgetAnimation* HideAnimation;
-
     UPROPERTY(meta = (BindWidget))
     UEditableText* UserNameEditableText;
     
     virtual void NativeOnInitialized() override;
-    virtual void OnAnimationFinished_Implementation(const UWidgetAnimation* Animation) override;
 
 private:
     TArray<UHNTextButtonWidget*> TextButtonWidgets;

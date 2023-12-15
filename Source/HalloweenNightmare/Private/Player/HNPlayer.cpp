@@ -36,7 +36,7 @@ AHNPlayer::AHNPlayer()
     // instead of recompiling to adjust them
     GetCharacterMovement()->JumpZVelocity = 700.f;
     GetCharacterMovement()->AirControl = 0.35f;
-    GetCharacterMovement()->MaxFlySpeed = 800.0f;
+    GetCharacterMovement()->MaxFlySpeed = 700.0f;
     GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
     GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
@@ -110,6 +110,8 @@ void AHNPlayer::SetInvulnerabilityActive(bool bActive)
 
 void AHNPlayer::StartInvulnerabilityTimer()
 {
+    if (LifeCount == 0) return;
+    
     SetInvulnerabilityActive(true);
     auto SetInvulnerabilityActiveFalse = [this]() {SetInvulnerabilityActive(false);};
     FTimerDelegate InvulnerabilityTimerDelegate;
