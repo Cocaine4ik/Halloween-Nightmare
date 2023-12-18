@@ -56,7 +56,7 @@ public:
     AHNCaveTile* SpawnStartCaveTile();
     AHNCaveTile* SpawnCaveTileWithRandomAngle();
     
-    void SpawnPickup(TSubclassOf<AHNBasePickup> PickupClass, AHNCaveTile* CaveTile);
+    AActor* SpawnPickup(TSubclassOf<AHNBasePickup> PickupClass, AHNCaveTile* CaveTile);
     void SpawnPickups(TSubclassOf<AHNBasePickup> PickupClass, AHNCaveTile* CaveTile, const int32 Count);
     
     virtual void BeginPlay() override;

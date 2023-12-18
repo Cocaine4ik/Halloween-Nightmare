@@ -70,7 +70,8 @@ AHNCaveTile* AHNGameMode::SpawnCaveTile(TSubclassOf<AHNCaveTile> CaveTileClass, 
         if (CurrentTileCountToSpawnLife == LevelData.TargetTilesCountToSpawnLife)
         {
             CurrentTileCountToSpawnLife = 0;
-            SpawnPickup(LifePickupClass, CaveTile);
+            const auto Pickup = SpawnPickup(LifePickupClass, CaveTile);
+            CaveTile->AddPickup(Pickup);
         }
     }
     
@@ -140,9 +141,9 @@ AHNCaveTile* AHNGameMode::SpawnCaveTileWithRandomAngle()
     return SpawnedTile;
 }
 
-void AHNGameMode::SpawnPickup(TSubclassOf<AHNBasePickup> PickupClass, AHNCaveTile* CaveTile)
+AActor* AHNGameMode::SpawnPickup(TSubclassOf<AHNBasePickup> PickupClass, AHNCaveTile* CaveTile)
 {
-    if (!GetWorld()) return;
+    if (!GetWorld()) return nullptr;
 
     FVector Location;
     
@@ -153,14 +154,19 @@ void AHNGameMode::SpawnPickup(TSubclassOf<AHNBasePickup> PickupClass, AHNCaveTil
 
         const auto Pickup = GetWorld()->SpawnActor<AHNBasePickup>(PickupClass, Location,
             FRotator(0.0f,0.0f,0.0f), SpawnParameters);
+
+        return Pickup;
     }
+
+    return nullptr;
 }
 
 void AHNGameMode::SpawnPickups(TSubclassOf<AHNBasePickup> PickupClass, AHNCaveTile* CaveTile, const int32 Count)
 {
     for (int i = 0; i < Count; i++)
     {
-        SpawnPickup(PickupClass, CaveTile);
+        const auto Pickup = SpawnPickup(PickupClass, CaveTile);
+        CaveTile->AddPickup(Pickup);
     }
 }
 

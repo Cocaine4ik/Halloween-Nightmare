@@ -177,8 +177,14 @@ AHNPlayerController* AHNPlayer::GetPlayerController() const
 void AHNPlayer::OnCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent,
     int32 OtherBodyIndex, bool bFromSweep, const FHitResult& Hit)
 {
-    // if (OverlappedComponent->GetName() != "Cave Trigger Box") return;
+    if (OtherComponent->GetName() != "CaveTriggerBox") return;
 
+    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green,
+        FString::Printf(TEXT("Collision Component Name: %s"), *OtherComponent->GetName()));
+    
+    const auto CaveTime = Cast<AHNCaveTile>(OtherComponent->GetOwner());
+    CaveTime->StartSelfDestroyTimer();
+    
     const auto GameMod = Cast<AHNGameMode>(GetWorld()->GetAuthGameMode());
     GameMod->SpawnCaveTileWithRandomAngle();
 }

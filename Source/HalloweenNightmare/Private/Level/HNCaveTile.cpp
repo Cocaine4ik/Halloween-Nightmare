@@ -75,6 +75,17 @@ void AHNCaveTile::DestroyAllObstacles()
     DestroyObstacles(SmallObstacles);
 }
 
+void AHNCaveTile::SelfDestroy()
+{
+    for (const auto Pickup : Pickups)
+    {
+        Pickup->Destroy();
+    }
+    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red,
+        FString::Printf(TEXT("Cave Tile Destroyed: %s"), *GetName()));
+    Destroy();
+}
+
 TArray<UStaticMeshComponent*> AHNCaveTile::AddObstacleMeshes(int32 Count, const FString PrefixName)
 {
     TArray<UStaticMeshComponent*> ObstacleMeshes;
@@ -133,4 +144,9 @@ bool AHNCaveTile::CalculateRandomSpawnLocation(FVector& SpawnLocation)
     SpawnLocation = Location;
 
     return true;
+}
+
+void AHNCaveTile::StartSelfDestroyTimer()
+{
+    GetWorldTimerManager().SetTimer(SelfDestroyTimer, this, &AHNCaveTile::SelfDestroy, SelfDestroyTime, false);
 }

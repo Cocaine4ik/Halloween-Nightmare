@@ -52,7 +52,16 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Obstacles")
     int32 SmallObstaclesCount = 10;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= "Timer")
+    float SelfDestroyTime = 10.0f;
+    
 private:
+    TArray<AActor*> Pickups;
+    
+    FTimerHandle SelfDestroyTimer;
+
+    void SelfDestroy();
+    
     TArray<UStaticMeshComponent*> AddObstacleMeshes(int32 Count, const FString PrefixName);
     void RandomDestroyObstacles(TArray<UStaticMeshComponent*> Obstacles, const int32 MinCount, const int32 MaxCount);
     void DestroyObstacles(TArray<UStaticMeshComponent*> Obstacles);
@@ -64,7 +73,10 @@ public:
     void SetRandomCaveTileAngle();
 
     bool CalculateRandomSpawnLocation(FVector& SpawnLocation);
-public:
+
+    void StartSelfDestroyTimer();
+    
     FORCEINLINE const FTransform& GetAttachTransform() const { return AttachPoint->GetComponentTransform(); }
+    FORCEINLINE void AddPickup(AActor* Pickup) { Pickups.Add(Pickup); }
 };
 
