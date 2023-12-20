@@ -67,7 +67,7 @@ FString::Printf(TEXT("UpdateScoresTable")));
                 
                 ++PlaceNumber;
 
-                if (PlaceNumber >= ScoreTableRowsNum) break;
+                if (PlaceNumber > ScoreTableRowsNum) break;
             }
         }
     }
