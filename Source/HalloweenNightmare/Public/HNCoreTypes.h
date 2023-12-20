@@ -9,6 +9,9 @@
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnGameStateChangedSignature, EHNGameState);
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSaveUserNameSignature, FName);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSaveScoresSignature, const FHNScoresData& ScoresData);
+
 // Enums
 
 UENUM(BlueprintType)
@@ -58,7 +61,7 @@ struct FHNLevelData : public FTableRowBase
 };
 
 USTRUCT(BlueprintType)
-struct FHNScoresData : public FTableRowBase
+struct FHNScoresData
 {
     GENERATED_USTRUCT_BODY()
     

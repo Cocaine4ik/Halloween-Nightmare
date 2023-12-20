@@ -3,22 +3,20 @@
 
 #include "HNGameInstance.h"
 
-FName UHNGameInstance::GetUserName() const
-{
-    if (const auto HNUserNameDataAsset = Cast<UHNUserNameDataAsset>(UserNameDataAsset))
-    {
-        
-        return HNUserNameDataAsset->GetUserName();
-    }
+#include "HNSaveGame.h"
+#include "Kismet/GameplayStatics.h"
 
-    return FName("User");
-}
-
-void UHNGameInstance::SetUserName(const FName Name)
+void UHNGameInstance::Init()
 {
-    if (const auto HNUserNameDataAsset = Cast<UHNUserNameDataAsset>(UserNameDataAsset))
+    Super::Init();
+
+    OnSaveUserName.AddUObject(this, &UHNGameInstance::SaveUserName);
+    OnSaveScores.AddUObject(this, &UHNGameInstance::SaveScores);
+
+    // Load username from save file if it possible
+    if (const auto SaveGame = LoadGame())
     {
-        HNUserNameDataAsset->SetUserName(Name);
+        UserName = SaveGame->GetUserName();
     }
 }
 
@@ -32,4 +30,66 @@ FName UHNGameInstance::GetLevelName() const
         case EHNLevel::Nightmare: Name = "Nightmare"; break;
     }
     return Name;
+}
+
+void UHNGameInstance::CreateSaveFile()
+{
+    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Purple,
+FString::Printf(TEXT("CreateSaveFile")));
+    
+    if (UHNSaveGame* HNSaveGame = Cast<UHNSaveGame>(UGameplayStatics::CreateSaveGameObject(UHNSaveGame::StaticClass())))
+    {
+        UGameplayStatics::SaveGameToSlot(HNSaveGame, "Slot1", 0);
+    }
+    
+}
+
+void UHNGameInstance::SaveUserName(FName Name)
+{
+    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Purple,
+FString::Printf(TEXT("SaveUserName")));
+    
+    if (UHNSaveGame* HNSaveGame = LoadGame())
+    {
+        HNSaveGame->SetUserName(Name);
+        SaveGame(HNSaveGame);
+    }
+    else
+    {
+        CreateSaveFile();
+        SaveUserName(Name);
+    }
+}
+
+void UHNGameInstance::SaveScores(const FHNScoresData& ScoresData)
+{
+    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Purple,
+FString::Printf(TEXT("SaveScores")));
+    
+    if (UHNSaveGame* HNSaveGame = LoadGame())
+    {
+        HNSaveGame->AddScoresData(ScoresData);
+        SaveGame(HNSaveGame);
+    }
+    else
+    {
+        CreateSaveFile();
+        SaveScores(ScoresData);
+    }
+}
+
+void UHNGameInstance::SaveGame(UHNSaveGame* SaveGame)
+{
+    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Purple,
+FString::Printf(TEXT("SaveGame")));
+    
+    UGameplayStatics::SaveGameToSlot(SaveGame, "Slot1", 0);
+}
+
+UHNSaveGame* UHNGameInstance::LoadGame() const
+{
+    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Purple,
+FString::Printf(TEXT("LoadGame")));
+    
+    return Cast<UHNSaveGame>(UGameplayStatics::LoadGameFromSlot("Slot1", 0));
 }

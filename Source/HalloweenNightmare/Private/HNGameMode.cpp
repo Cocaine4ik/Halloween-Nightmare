@@ -11,6 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "EngineUtils.h"
 #include "HNGameInstance.h"
+#include "HNSaveGame.h"
 #include "Engine/DataTable.h"
 
 AHNGameMode::AHNGameMode()
@@ -22,47 +23,48 @@ AHNGameMode::AHNGameMode()
 
 void AHNGameMode::SaveScore()
 {
-    if (!GetWorld() || !ScoresDataTable) return;
+    if (!GetWorld())
+    {
+        return;
+    }
 
-    if(const auto HNGameInstance = GetWorld()->GetGameInstance<UHNGameInstance>())
+    if (const auto HNGameInstance = GetWorld()->GetGameInstance<UHNGameInstance>())
     {
         const FName UserName = HNGameInstance->GetUserName();
         const FDateTime CurrentDateTime(FDateTime::Now());
         const FName LevelName = HNGameInstance->GetLevelName();
-        
+
         FHNScoresData ScoresData;
-        
+
         ScoresData.Score = Score;
         ScoresData.UserName = UserName;
         ScoresData.LevelName = LevelName;
         ScoresData.DateTime = CurrentDateTime;
 
-        /*
-        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,
-            FString::Printf(TEXT("DATE TIME: %s"), *ScoreStruct.DateTime.ToString()));
-            */
-
-        // Use rows number as row ID
-        const auto RowsNumString = FString::FromInt(ScoresDataTable->GetRowNames().Num());
-        const FName NewRowID(RowsNumString);
-        
-        ScoresDataTable->AddRow(NewRowID, ScoresData);
+        HNGameInstance->OnSaveScores.Broadcast(ScoresData);
     }
 }
 
 AHNCaveTile* AHNGameMode::SpawnCaveTile(TSubclassOf<AHNCaveTile> CaveTileClass, FTransform AttachPointTransform)
 {
 
-    if (!GetWorld()) return nullptr;
+    if (!GetWorld())
+    {
+        return nullptr;
+    }
 
     const auto Player = Cast<AHNPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
 
-    if (!Player) return nullptr;
-    
-    AHNCaveTile* CaveTile = GetWorld()->SpawnActorDeferred<AHNCaveTile>(CaveTileClass, FTransform::Identity, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+    if (!Player)
+    {
+        return nullptr;
+    }
+
+    AHNCaveTile* CaveTile = GetWorld()->SpawnActorDeferred<AHNCaveTile>(CaveTileClass, FTransform::Identity, nullptr, nullptr,
+        ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
     UGameplayStatics::FinishSpawningActor(CaveTile, AttachPointTransform);
-    
+
     if (CaveTile)
     {
         PreviousCaveTile = CaveTile;
@@ -74,13 +76,16 @@ AHNCaveTile* AHNGameMode::SpawnCaveTile(TSubclassOf<AHNCaveTile> CaveTileClass, 
             CaveTile->AddPickup(Pickup);
         }
     }
-    
+
     return CaveTile;
 }
 
 void AHNGameMode::LoadLevelData()
 {
-    if (!GetWorld()) return;
+    if (!GetWorld())
+    {
+        return;
+    }
 
     if (const auto GameInstance = GetWorld()->GetGameInstance<UHNGameInstance>())
     {
@@ -88,18 +93,24 @@ void AHNGameMode::LoadLevelData()
 
         switch (Level)
         {
-            case EHNLevel::Hard: LevelData = GetLevelData(FName("Hard")); break;
-            case EHNLevel::Nightmare: LevelData = GetLevelData(FName("Nightmare")); break;
+            case EHNLevel::Hard: LevelData = GetLevelData(FName("Hard"));
+                break;
+            case EHNLevel::Nightmare: LevelData = GetLevelData(FName("Nightmare"));
+                break;
 
-            default: LevelData = GetLevelData(FName("Default")); break;
+            default: LevelData = GetLevelData(FName("Default"));
+                break;
         }
     }
 }
 
 FHNLevelData AHNGameMode::GetLevelData(FName LevelName) const
 {
-    if (!LevelsDataTable) return LevelData;
-    
+    if (!LevelsDataTable)
+    {
+        return LevelData;
+    }
+
     if (const auto Data = LevelsDataTable->FindRow<FHNLevelData>(LevelName, ""))
     {
         return *Data;
@@ -143,17 +154,20 @@ AHNCaveTile* AHNGameMode::SpawnCaveTileWithRandomAngle()
 
 AActor* AHNGameMode::SpawnPickup(TSubclassOf<AHNBasePickup> PickupClass, AHNCaveTile* CaveTile)
 {
-    if (!GetWorld()) return nullptr;
+    if (!GetWorld())
+    {
+        return nullptr;
+    }
 
     FVector Location;
-    
+
     if (CaveTile->CalculateRandomSpawnLocation(Location))
     {
         FActorSpawnParameters SpawnParameters;
         SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
         const auto Pickup = GetWorld()->SpawnActor<AHNBasePickup>(PickupClass, Location,
-            FRotator(0.0f,0.0f,0.0f), SpawnParameters);
+            FRotator(0.0f, 0.0f, 0.0f), SpawnParameters);
 
         return Pickup;
     }
@@ -176,7 +190,7 @@ void AHNGameMode::BeginPlay()
     Super::BeginPlay();
 
     LoadLevelData();
-    
+
     SpawnStartCaveTile();
     SpawnCaveTileWithRandomAngle();
     SpawnCaveTileWithRandomAngle();
@@ -191,7 +205,7 @@ void AHNGameMode::StartPlay()
 void AHNGameMode::GameOver()
 {
     SetGameState(EHNGameState::GameOver);
-    
+
     for (auto Pawn : TActorRange<APawn>(GetWorld()))
     {
         if (Pawn)
@@ -221,10 +235,6 @@ bool AHNGameMode::ClearPause()
     {
         SetGameState(EHNGameState::InProgress);
     }
-    
-    return bPauseClear;
-}
 
-void AHNGameMode::RestartGame()
-{
+    return bPauseClear;
 }

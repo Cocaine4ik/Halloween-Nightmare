@@ -38,9 +38,6 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Pickups")
     TSubclassOf<AHNLifePickup> LifePickupClass;
-    
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
-    UDataTable* ScoresDataTable;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Data")
     UDataTable* LevelsDataTable;
@@ -65,7 +62,6 @@ public:
     void GameOver();
     virtual bool SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate) override;
     virtual bool ClearPause() override;
-    void RestartGame();
 
     void SaveScore();
 private:
