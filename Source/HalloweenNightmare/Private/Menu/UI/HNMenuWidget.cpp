@@ -9,6 +9,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "UI/HNTextButtonWidget.h"
 #include "Components/EditableText.h"
+#include "Kismet/GameplayStatics.h"
 
 void UHNMenuWidget::NativeOnInitialized()
 {
@@ -76,8 +77,10 @@ void UHNMenuWidget::OnUsernameCommitted(const FText& Text, ETextCommit::Type Com
     if (!GetWorld()) return;
     if (const auto HNGameInstance = GetWorld()->GetGameInstance<UHNGameInstance>())
     {
-        const FName UserName(*Text.ToString());
-        HNGameInstance->SetUserName(UserName);
+            const FName UserName(*Text.ToString());
+            HNGameInstance->SetUserName(UserName);
+        
+            HNGameInstance->OnSaveUserName.Broadcast(UserName);
     }
 }
 

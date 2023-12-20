@@ -43,6 +43,6 @@ private:
 
     UFUNCTION()
     void OnUsernameCommitted(const FText& Text, ETextCommit::Type CommitMethod);
-
+    
     FText GetUserName() const;
 };
