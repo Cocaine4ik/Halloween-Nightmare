@@ -13,6 +13,7 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 class AHNPlayerController;
+class USoundCue;
 
 UCLASS()
 class HALLOWEENNIGHTMARE_API AHNPlayer : public ACharacter
@@ -56,6 +57,12 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Invulnerability")
     bool bIsInvulnerable = false;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+    USoundCue* HitSound;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+    USoundCue* DeathSound;
     
 private:
     FTimerHandle InvulnerabilityTimer;

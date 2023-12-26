@@ -11,6 +11,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "HNGameMode.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AHNPlayer::AHNPlayer()
@@ -94,7 +96,8 @@ void AHNPlayer::SetInvulnerabilityActive(bool bActive)
         
         GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Green,
             FString::Printf(TEXT("Invulnerability Activated")));
-        
+
+        UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSound, GetActorLocation());        
     }
     else
     {
@@ -160,6 +163,8 @@ void AHNPlayer::AddLife(int32 Value)
 
     if (LifeCount == 0)
     {
+        UGameplayStatics::PlaySoundAtLocation(GetWorld(), DeathSound, GetActorLocation());
+        
         const auto GameMode = Cast<AHNGameMode>(GetWorld()->GetAuthGameMode());
         GameMode->GameOver();
         GameMode->SaveScore();

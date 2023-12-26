@@ -4,7 +4,9 @@
 #include "Pickups/HNBasePickup.h"
 
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Player/HNPlayer.h"
+#include "Sound/SoundCue.h"
 
 AHNBasePickup::AHNBasePickup()
 {
@@ -43,6 +45,8 @@ void AHNBasePickup::NotifyActorBeginOverlap(AActor* OtherActor)
     Player = Cast<AHNPlayer>(OtherActor);
     if (Player)
     {
+        UGameplayStatics::PlaySoundAtLocation(GetWorld(), OnTakenSound, GetActorLocation());
+        
         Invoke();
         Player = nullptr;
         Destroy();
@@ -53,6 +57,7 @@ void AHNBasePickup::NotifyActorBeginOverlap(AActor* OtherActor)
 void AHNBasePickup::NotifyActorEndOverlap(AActor* OtherActor)
 {
     Super::NotifyActorEndOverlap(OtherActor);
+    
         Destroy();
 }
 

@@ -2,6 +2,8 @@
 
 
 #include "UI/HNTextButtonWidget.h"
+
+#include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Styling/SlateColor.h"
 #include "Math/Color.h"

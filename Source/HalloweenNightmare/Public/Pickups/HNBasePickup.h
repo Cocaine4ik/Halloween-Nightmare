@@ -8,6 +8,8 @@
 
 class USphereComponent;
 class AHNPlayer;
+class USoundCue;
+
 UCLASS()
 class HALLOWEENNIGHTMARE_API AHNBasePickup : public AActor
 {
@@ -44,6 +46,9 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Lift")
     float LiftSpeed = 0.1f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sound")
+    USoundCue* OnTakenSound;
     
     
     AHNPlayer* Player;
