@@ -4,7 +4,7 @@
 **Genre:** Runner <br>
 **Project goal:** Halloween Game Jam 2023 <br>
 **Engine:** Unreal Engine 5.2 <br>
-**Platform:** Windows <br>
+**Platforms:** Windows <br>
 **Shipped:** itch.io <br>
 **Technologies & Patterns:** C++, UMG, Data Tables, Unreal Save System, Random Level Generation, Unreal Audio System, Unreal Enhanced Input <br>
 
