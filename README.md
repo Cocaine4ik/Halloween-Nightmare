@@ -1,5 +1,5 @@
 # Halloween Nightmare
-![alt text](https://github.com/Cocaine4ik/Halloween-Nightmare/blob/main/Content/Splash/Splash.png)
+![Halloween Nightmare](https://github.com/Cocaine4ik/Halloween-Nightmare/blob/main/Content/Splash/Splash.png)
 <br><br>
 **Genre:** Runner <br>
 **Project goal:** Halloween Game Jam 2023 <br>
