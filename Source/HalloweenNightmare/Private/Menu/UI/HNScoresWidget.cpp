@@ -2,7 +2,6 @@
 
 
 #include "Menu/UI/HNScoresWidget.h"
-
 #include "HNCoreTypes.h"
 #include "HNGameInstance.h"
 #include "HNGameModeBase.h"

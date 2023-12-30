@@ -14,6 +14,7 @@ class AHNScorePickup;
 class AHNBasePickup;
 
 
+
 UCLASS()
 class HALLOWEENNIGHTMARE_API AHNGameMode : public AHNGameModeBase
 {

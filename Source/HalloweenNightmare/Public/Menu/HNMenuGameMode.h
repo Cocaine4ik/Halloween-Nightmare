@@ -6,7 +6,6 @@
 #include "HNGameModeBase.h"
 #include "HNMenuGameMode.generated.h"
 
-
 UCLASS()
 class HALLOWEENNIGHTMARE_API AHNMenuGameMode : public AHNGameModeBase
 {

@@ -9,7 +9,6 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "UI/HNTextButtonWidget.h"
 #include "Components/EditableText.h"
-#include "Kismet/GameplayStatics.h"
 
 void UHNMenuWidget::NativeOnInitialized()
 {

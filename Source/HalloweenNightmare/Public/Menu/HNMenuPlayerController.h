@@ -6,9 +6,6 @@
 #include "GameFramework/PlayerController.h"
 #include "HNMenuPlayerController.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class HALLOWEENNIGHTMARE_API AHNMenuPlayerController : public APlayerController
 {

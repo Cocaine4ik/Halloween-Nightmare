@@ -2,7 +2,6 @@
 
 
 #include "Pickups/HNLifePickup.h"
-
 #include "HNPlayer.h"
 
 void AHNLifePickup::Invoke()

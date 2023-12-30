@@ -6,9 +6,6 @@
 #include "Pickups/HNBasePickup.h"
 #include "HNScorePickup.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class HALLOWEENNIGHTMARE_API AHNScorePickup : public AHNBasePickup
 {

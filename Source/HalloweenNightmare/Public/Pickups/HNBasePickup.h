@@ -16,7 +16,6 @@ class HALLOWEENNIGHTMARE_API AHNBasePickup : public AActor
     GENERATED_BODY()
 
 public:
-    // Sets default values for this actor's properties
     AHNBasePickup();
 
 protected:
